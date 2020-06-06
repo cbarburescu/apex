@@ -187,18 +187,18 @@ def _initialize(models, optimizers, properties, num_losses=1, cast_model_outputs
         else:
             output_caster = functools.partial(to_type, torch.float32)
 
-        for model in models:
-            # Patch the forward method to cast incoming data to the correct type, and
-            # outgoing data to float32, so "the user never needs to call .half()."
-            # I like writing things explicitly more than decorators.
-            def patch_forward(old_fwd):
-                def new_fwd(*args, **kwargs):
-                    output = old_fwd(*applier(args, input_caster),
-                                     **applier(kwargs, input_caster))
-                    return applier(output, output_caster)
-                return new_fwd
+        # for model in models:
+        #     # Patch the forward method to cast incoming data to the correct type, and
+        #     # outgoing data to float32, so "the user never needs to call .half()."
+        #     # I like writing things explicitly more than decorators.
+        #     def patch_forward(old_fwd):
+        #         def new_fwd(*args, **kwargs):
+        #             output = old_fwd(*applier(args, input_caster),
+        #                              **applier(kwargs, input_caster))
+        #             return applier(output, output_caster)
+        #         return new_fwd
 
-            model.forward = patch_forward(model.forward)
+        #     model.forward = patch_forward(model.forward)
 
         # State dict trick to recast any preexisting per-param state tensors
         for optimizer in optimizers:
